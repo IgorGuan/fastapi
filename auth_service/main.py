@@ -10,12 +10,12 @@ from datetime import datetime, timedelta
 from jose import jwt, JWTError
 from typing import Optional
 
-# 创建数据库表
+# Create database tables
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# 配置 CORS
+# Configure CORS
 origins = ["*"]
 app.add_middleware(
     CORSMiddleware,
@@ -25,17 +25,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 注册路由
+# Register routers
 app.include_router(auth_router)
 app.include_router(users_router)
 
-# 配置 JWT 秘钥和算法
+# Configure JWT secret key and algorithm
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 REFRESH_TOKEN_EXPIRE_DAYS = 7
 
-# 生成 access 令牌
+# Generate access token
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
     if expires_delta:
@@ -46,7 +46,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-# 生成 refresh 令牌
+# Generate refresh token
 def create_refresh_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
     if expires_delta:
@@ -57,7 +57,7 @@ def create_refresh_token(data: dict, expires_delta: Optional[timedelta] = None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-# 验证 access 令牌
+# Verify access token
 def verify_access_token(token: str):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
