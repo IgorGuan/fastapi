@@ -1,0 +1,19 @@
+services:
+  db:
+    image: postgres:13
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=auth_db
+      - POSTGRES_USER=auth_user
+      - POSTGRES_PASSWORD=auth_password
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://auth_user:auth_password@db/auth_db
+    depends_on:
+      - db
+volumes:
+  postgres-data:
